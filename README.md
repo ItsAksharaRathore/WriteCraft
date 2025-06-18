@@ -1,7 +1,7 @@
 # ✍️ Text to Handwritten Converter
 
 <div align="center">
-  <img src="static\image.png" alt="Text to Handwritten Logo" width="200">
+  <img src="static/image.png" alt="Text to Handwritten Logo" width="200">
   <h3>Transform digital text into realistic handwritten notes</h3>
 </div>
 
@@ -117,16 +117,8 @@ Visit `http://127.0.0.1:5000` in your browser to start using the converter.
 ## 📸 Screenshots
 
 <div align="center">
-  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
-    <div style="flex: 1; min-width: 300px; max-width: 45%;">
-      <img src="static\I1.png" alt="Example 1" width="100%">
-      
-   
-  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px;">
-    <div style="flex: 1; min-width: 300px; max-width: 45%;">
-      <img src="static\I2.png" alt="Example 3" width="100%">
-    
-  </div>
+  <img src="static/I1.png" alt="Example 1" width="45%" style="margin: 10px;">
+  <img src="static/I2.png" alt="Example 2" width="45%" style="margin: 10px;">
 </div>
 
 ## 📚 Documentation
