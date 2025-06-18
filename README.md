@@ -60,7 +60,7 @@ This Text to Handwritten Converter is a powerful tool that transforms digital te
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/text-to-handwritten.git
+git clone https://github.com/itsAksharaRathore/text-to-handwritten.git
 cd text-to-handwritten
 
 # Create and activate virtual environment
