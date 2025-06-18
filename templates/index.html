@@ -1,0 +1,2121 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Human Handwriting Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>✍️ Text-to-Human Handwriting Converter</h1>
+        
+        <div class="input-section">
+            <label for="text-input">Enter your text:</label>
+            <textarea id="text-input" rows="8" placeholder="Type or paste your text here...">Hello there! This is a sample of converted handwriting.
+
+You can customize the font style, size, colors, and add natural variations to make it look more realistic. Try different fonts and settings to find your perfect handwriting style!
+
+Best regards,
+Your Handwriting Converter</textarea>
+        </div>
+        
+        <div class="settings-section">
+            <h2>Settings</h2>
+            
+            <div class="settings-grid">
+                <div class="setting">
+                    <label for="font-select">Font Style:</label>
+                    <select id="font-select">
+                        {% for font in fonts %}
+                        <option value="{{ font }}">{{ font }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="setting">
+                    <label for="font-size">Font Size: <span id="font-size-value">32</span></label>
+                    <input type="range" id="font-size" min="16" max="72" value="32">
+                </div>
+                
+                <div class="setting">
+                    <label for="line-spacing">Line Spacing: <span id="line-spacing-value">1.5</span></label>
+                    <input type="range" id="line-spacing" min="1" max="3" step="0.1" value="1.5">
+                </div>
+                
+                <div class="setting">
+                    <label for="randomness">Randomness: <span id="randomness-value">0.3</span></label>
+                    <input type="range" id="randomness" min="0" max="1" step="0.1" value="0.3">
+                </div>
+                
+                <div class="setting">
+                    <label>Ink Color:</label>
+                    <input type="color" id="ink-color" value="#1a1a1a">
+                </div>
+                
+                <div class="setting">
+                    <label>Paper Color:</label>
+                    <input type="color" id="paper-color" value="#ffffff">
+                </div>
+            </div>
+            
+            <div class="advanced-settings">
+                <input type="checkbox" id="show-advanced">
+                <label for="show-advanced">Show Advanced Settings</label>
+                
+                <div id="advanced-options" style="display: none;">
+                    <div class="setting">
+                        <label for="pressure-var">Pen Pressure Variation: <span id="pressure-var-value">0.2</span></label>
+                        <input type="range" id="pressure-var" min="0" max="0.5" step="0.05" value="0.2">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="generate-btn">🖋️ Generate Handwriting</button>
+            <button id="preview-btn">👁️ Preview</button>
+            <button id="download-btn">💾 Download Image</button>
+            <button id="clear-btn">🗑️ Clear</button>
+        </div>
+        
+        <div class="status-bar" id="status-bar">Ready to convert text to handwriting</div>
+        
+        <div class="preview-container" id="preview-container">
+            <h3>Preview</h3>
+            <div class="preview-image" id="preview-image">
+                <p>Your generated handwriting will appear here</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwriting Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .controls {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .preview {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 20px;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: inherit;
+        }
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .color-picker input {
+            flex: 1;
+            padding: 5px;
+            height: 40px;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        #result {
+            max-width: 100%;
+            max-height: 400px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+        .download-btn {
+            margin-top: 20px;
+            background: #27ae60;
+            display: none;
+        }
+        .download-btn:hover {
+            background: #219653;
+        }
+        .slider-container {
+            margin-bottom: 20px;
+        }
+        .slider-container label {
+            display: flex;
+            justify-content: space-between;
+        }
+        .slider-value {
+            font-weight: normal;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Handwriting Generator</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <label for="text">Enter your text:</label>
+            <textarea id="text" placeholder="Type or paste your text here..."></textarea>
+            
+            <label for="font">Select Font:</label>
+            <select id="font">
+                {% for font in fonts %}
+                <option value="{{ font }}">{{ font }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="template">Notebook Template:</label>
+            <select id="template">
+                {% for template in templates %}
+                <option value="{{ template }}">{{ template }}</option>
+                {% endfor %}
+            </select>
+            
+            <div class="slider-container">
+                <label for="fontSize">
+                    Font Size: <span id="fontSizeValue" class="slider-value">32</span>
+                </label>
+                <input type="range" id="fontSize" min="12" max="72" value="32">
+            </div>
+            
+            <div class="slider-container">
+                <label for="lineSpacing">
+                    Line Spacing: <span id="lineSpacingValue" class="slider-value">1.5</span>
+                </label>
+                <input type="range" id="lineSpacing" min="1" max="3" step="0.1" value="1.5">
+            </div>
+            
+            <div class="slider-container">
+                <label for="wordSpacing">
+                    Word Spacing: <span id="wordSpacingValue" class="slider-value">1.0</span>
+                </label>
+                <input type="range" id="wordSpacing" min="0.5" max="2" step="0.1" value="1.0">
+            </div>
+            
+            <div class="slider-container">
+                <label for="randomness">
+                    Randomness: <span id="randomnessValue" class="slider-value">0.3</span>
+                </label>
+                <input type="range" id="randomness" min="0" max="1" step="0.1" value="0.3">
+            </div>
+            
+            <div class="slider-container">
+                <label for="pressureVar">
+                    Pressure Variation: <span id="pressureVarValue" class="slider-value">0.2</span>
+                </label>
+                <input type="range" id="pressureVar" min="0" max="1" step="0.1" value="0.2">
+            </div>
+            
+            <div class="color-picker">
+                <div style="flex: 1;">
+                    <label for="inkColor">Ink Color:</label>
+                    <input type="color" id="inkColor" value="#1a1a1a">
+                </div>
+                <div style="flex: 1;">
+                    <label for="paperColor">Paper Color:</label>
+                    <input type="color" id="paperColor" value="#ffffff">
+                </div>
+            </div>
+            
+            <div class="slider-container">
+                <label for="marginLeft">
+                    Left Margin: <span id="marginLeftValue" class="slider-value">50</span>px
+                </label>
+                <input type="range" id="marginLeft" min="20" max="200" value="50">
+            </div>
+            
+            <div class="slider-container">
+                <label for="marginTop">
+                    Top Margin: <span id="marginTopValue" class="slider-value">50</span>px
+                </label>
+                <input type="range" id="marginTop" min="20" max="200" value="50">
+            </div>
+            
+            <button id="generate">Generate Handwriting</button>
+        </div>
+        
+        <div class="preview">
+            <h3>Your Handwriting Preview</h3>
+            <img id="result" alt="Handwriting result will appear here">
+            <button id="download" class="download-btn">Download Image</button>
+        </div>
+    </div>
+
+    <script>
+        // Update slider value displays
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            const valueElement = document.getElementById(slider.id + 'Value');
+            slider.addEventListener('input', () => {
+                valueElement.textContent = slider.value;
+            });
+        });
+
+        // Generate handwriting
+        document.getElementById('generate').addEventListener('click', async () => {
+            const text = document.getElementById('text').value.trim();
+            if (!text) {
+                alert('Please enter some text to convert!');
+                return;
+            }
+
+            const params = {
+                text: text,
+                font: document.getElementById('font').value,
+                fontSize: document.getElementById('fontSize').value,
+                lineSpacing: document.getElementById('lineSpacing').value,
+                inkColor: document.getElementById('inkColor').value,
+                paperColor: document.getElementById('paperColor').value,
+                randomness: document.getElementById('randomness').value,
+                pressureVar: document.getElementById('pressureVar').value,
+                template: document.getElementById('template').value,
+                marginLeft: document.getElementById('marginLeft').value,
+                marginTop: document.getElementById('marginTop').value,
+                wordSpacing: document.getElementById('wordSpacing').value
+            };
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to generate handwriting');
+                }
+
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                const resultImg = document.getElementById('result');
+                
+                resultImg.src = imageUrl;
+                resultImg.style.display = 'block';
+                document.getElementById('download').style.display = 'block';
+                
+                // Set download link
+                document.getElementById('download').onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = imageUrl;
+                    a.download = `handwriting-${new Date().toISOString().slice(0,10)}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+            } catch (error) {
+                alert(error.message);
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✍️ Text-to-Human Handwriting Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .input-section h2 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        #text-input {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        #text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .settings-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .settings-section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .setting {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting label {
+            font-weight: 500;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .setting select,
+        .setting input[type="range"],
+        .setting input[type="color"] {
+            padding: 8px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .setting select:focus,
+        .setting input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .setting input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            background: #dee2e6;
+            border: none;
+        }
+
+        .setting input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .setting input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .template-option {
+            position: relative;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .template-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .template-option.active {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .template-option input[type="radio"] {
+            display: none;
+        }
+
+        .template-preview {
+            width: 60px;
+            height: 40px;
+            margin: 0 auto 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-preview.blank {
+            background: white;
+        }
+
+        .template-preview.lined {
+            background: white;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 6px,
+                #b3d9ff 6px,
+                #b3d9ff 7px
+            );
+        }
+
+        .template-preview.notebook {
+            background: #fefefe;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 5px,
+                #d1e7dd 5px,
+                #d1e7dd 6px
+            );
+        }
+
+        .template-preview.notebook::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #ff6b6b;
+        }
+
+        .template-preview.college {
+            background: white;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 4px,
+                #e6f3ff 4px,
+                #e6f3ff 5px
+            );
+        }
+
+        .template-preview.college::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #ff9999;
+        }
+
+        .template-preview.wide {
+            background: white;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 7px,
+                #e6f3ff 7px,
+                #e6f3ff 8px
+            );
+        }
+
+        .template-preview.wide::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #ff9999;
+        }
+
+        .template-preview.graph {
+            background: white;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 3px, #e6f3ff 3px, #e6f3ff 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 3px, #e6f3ff 3px, #e6f3ff 4px);
+        }
+
+        .template-preview.vintage {
+            background: #f5f1e8;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 6px,
+                #d4c5b9 6px,
+                #d4c5b9 7px
+            );
+        }
+
+        .advanced-settings {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        #advanced-options {
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        #advanced-options.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px;
+            margin-top: 0;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-top: 2px solid #e9ecef;
+            color: #495057;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .status-bar.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-bar.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-bar.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .preview-container {
+            margin: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .preview-container h3 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .preview-image {
+            background: white;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .preview-image img {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .font-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .font-option {
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .font-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .font-option.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .font-sample {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .font-name {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .template-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✍️ Text-to-Human Handwriting Converter</h1>
+            <p>Transform your digital text into beautiful, realistic handwriting</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2>📝 Enter Your Text</h2>
+                <textarea id="text-input" placeholder="Type or paste your text here...">Hello there! This is a sample of converted handwriting.
+
+You can customize the font style, paper template, colors, and add natural variations to make it look more realistic.
+
+Try different fonts and settings to find your perfect handwriting style!
+
+Best regards,
+Your Handwriting Converter</textarea>
+            </div>
+            
+            <div class="settings-section">
+                <h2>⚙️ Customization Settings</h2>
+                
+                <div class="settings-grid">
+                    <div class="setting">
+                        <label for="font-select">✍️ Font Style:</label>
+                        <select id="font-select">
+                            <option value="Dancing Script">Dancing Script</option>
+                            <option value="Caveat">Caveat</option>
+                            <option value="Kalam">Kalam</option>
+                            <option value="Patrick Hand">Patrick Hand</option>
+                            <option value="Indie Flower">Indie Flower</option>
+                            <option value="Shadows Into Light">Shadows Into Light</option>
+                            <option value="Homemade Apple">Homemade Apple</option>
+                            <option value="Covered By Your Grace">Covered By Your Grace</option>
+                            <option value="Architects Daughter">Architects Daughter</option>
+                            <option value="Coming Soon">Coming Soon</option>
+                            <option value="Schoolbell">Schoolbell</option>
+                            <option value="Reenie Beanie">Reenie Beanie</option>
+                            <option value="Just Another Hand">Just Another Hand</option>
+                            <option value="Waiting for the Sunrise">Waiting for the Sunrise</option>
+                            <option value="Cedarville Cursive">Cedarville Cursive</option>
+                            <option value="Delius">Delius</option>
+                            <option value="Grand Hotel">Grand Hotel</option>
+                            <option value="Great Vibes">Great Vibes</option>
+                            <option value="Handlee">Handlee</option>
+                            <option value="Kristi">Kristi</option>
+                            <option value="La Belle Aurore">La Belle Aurore</option>
+                            <option value="League Script">League Script</option>
+                            <option value="Love Ya Like A Sister">Love Ya Like A Sister</option>
+                            <option value="Nanum Pen Script">Nanum Pen Script</option>
+                            <option value="Nothing You Could Do">Nothing You Could Do</option>
+                            <option value="Over the Rainbow">Over the Rainbow</option>
+                            <option value="Pacifico">Pacifico</option>
+                            <option value="Permanent Marker">Permanent Marker</option>
+                            <option value="Rock Salt">Rock Salt</option>
+                            <option value="Sacramento">Sacramento</option>
+                            <option value="Satisfy">Satisfy</option>
+                            <option value="Sue Ellen Francisco">Sue Ellen Francisco</option>
+                            <option value="Sunshiney">Sunshiney</option>
+                            <option value="Zeyada">Zeyada</option>
+                            <option value="Amatic SC">Amatic SC</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting">
+                        <label for="font-size">📏 Font Size: <span id="font-size-value">32</span>px</label>
+                        <input type="range" id="font-size" min="16" max="72" value="32">
+                    </div>
+                    
+                    <div class="setting">
+                        <label for="line-spacing">📐 Line Spacing: <span id="line-spacing-value">1.5</span></label>
+                        <input type="range" id="line-spacing" min="1" max="3" step="0.1" value="1.5">
+                    </div>
+                    
+                    <div class="setting">
+                        <label for="randomness">🎲 Randomness: <span id="randomness-value">0.3</span></label>
+                        <input type="range" id="randomness" min="0" max="1" step="0.1" value="0.3">
+                    </div>
+                    
+                    <div class="setting">
+                        <label for="ink-color">🖋️ Ink Color:</label>
+                        <input type="color" id="ink-color" value="#1a1a1a">
+                    </div>
+                    
+                    <div class="setting">
+                        <label for="margin-left">←→ Left Margin: <span id="margin-left-value">50</span>px</label>
+                        <input type="range" id="margin-left" min="20" max="200" value="50">
+                    </div>
+                    
+                    <div class="setting">
+                        <label for="margin-top">↑↓ Top Margin: <span id="margin-top-value">50</span>px</label>
+                        <input type="range" id="margin-top" min="20" max="200" value="50">
+                    </div>
+                </div>
+                
+                <div class="setting" style="margin-top: 20px;">
+                    <label>📄 Paper Template:</label>
+                    <div class="template-grid">
+                        <div class="template-option active" data-template="lined">
+                            <input type="radio" name="template" value="lined" checked>
+                            <div class="template-preview lined"></div>
+                            <div class="font-name">Lined Paper</div>
+                        </div>
+                        <div class="template-option" data-template="notebook">
+                            <input type="radio" name="template" value="notebook">
+                            <div class="template-preview notebook"></div>
+                            <div class="font-name">Notebook</div>
+                        </div>
+                        <div class="template-option" data-template="college">
+                            <input type="radio" name="template" value="college">
+                            <div class="template-preview college"></div>
+                            <div class="font-name">College Ruled</div>
+                        </div>
+                        <div class="template-option" data-template="wide">
+                            <input type="radio" name="template" value="wide">
+                            <div class="template-preview wide"></div>
+                            <div class="font-name">Wide Ruled</div>
+                        </div>
+                        <div class="template-option" data-template="graph">
+                            <input type="radio" name="template" value="graph">
+                            <div class="template-preview graph"></div>
+                            <div class="font-name">Graph Paper</div>
+                        </div>
+                        <div class="template-option" data-template="vintage">
+                            <input type="radio" name="template" value="vintage">
+                            <div class="template-preview vintage"></div>
+                            <div class="font-name">Vintage</div>
+                        </div>
+                        <div class="template-option" data-template="blank">
+                            <input type="radio" name="template" value="blank">
+                            <div class="template-preview blank"></div>
+                            <div class="font-name">Blank</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-settings">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="show-advanced">
+                        <label for="show-advanced">Show Advanced Settings</label>
+                    </div>
+                    
+                    <div id="advanced-options">
+                        <div class="setting">
+                            <label for="pressure-var">✏️ Pen Pressure Variation: <span id="pressure-var-value">0.2</span></label>
+                            <input type="range" id="pressure-var" min="0" max="0.5" step="0.05" value="0.2">
+                        </div>
+                        <div class="setting">
+                            <label for="word-spacing">↔ Word Spacing: <span id="word-spacing-value">1.0</span></label>
+                            <input type="range" id="word-spacing" min="0.5" max="2" step="0.1" value="1.0">
+                        </div>
+                        <div class="setting">
+                            <label for="letter-spacing">↔ Letter Spacing: <span id="letter-spacing-value">0.0</span></label>
+                            <input type="range" id="letter-spacing" min="-0.5" max="1" step="0.1" value="0.0">
+                        </div>
+                        <div class="setting">
+                            <label for="line-height">↕ Line Height: <span id="line-height-value">1.5</span></label>
+                            <input type="range" id="line-height" min="1" max="3" step="0.1" value="1.5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="generate-btn" class="btn btn-primary">
+                <span>🖋️ Generate Handwriting</span>
+            </button>
+            <button id="preview-btn" class="btn btn-secondary">👁️ Preview</button>
+            <button id="download-btn" class="btn btn-success">💾 Download Image</button>
+            <button id="clear-btn" class="btn btn-danger">🗑️ Clear</button>
+        </div>
+        
+        <div class="status-bar" id="status-bar">Ready to convert text to handwriting</div>
+        
+        <div class="preview-container" id="preview-container">
+            <h3>Preview</h3>
+            <div class="preview-image" id="preview-image">
+                <p>Your generated handwriting will appear here</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const textInput = document.getElementById('text-input');
+        const fontSelect = document.getElementById('font-select');
+        const fontSizeSlider = document.getElementById('font-size');
+        const fontSizeValue = document.getElementById('font-size-value');
+        const lineSpacingSlider = document.getElementById('line-spacing');
+        const lineSpacingValue = document.getElementById('line-spacing-value');
+        const randomnessSlider = document.getElementById('randomness');
+        const randomnessValue = document.getElementById('randomness-value');
+        const pressureVarSlider = document.getElementById('pressure-var');
+        const pressureVarValue = document.getElementById('pressure-var-value');
+        const inkColorPicker = document.getElementById('ink-color');
+        const marginLeftSlider = document.getElementById('margin-left');
+        const marginLeftValue = document.getElementById('margin-left-value');
+        const marginTopSlider = document.getElementById('margin-top');
+        const marginTopValue = document.getElementById('margin-top-value');
+        const wordSpacingSlider = document.getElementById('word-spacing');
+        const wordSpacingValue = document.getElementById('word-spacing-value');
+        const letterSpacingSlider = document.getElementById('letter-spacing');
+        const letterSpacingValue = document.getElementById('letter-spacing-value');
+        const lineHeightSlider = document.getElementById('line-height');
+        const lineHeightValue = document.getElementById('line-height-value');
+        const generateBtn = document.getElementById('generate-btn');
+        const previewBtn = document.getElementById('preview-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const statusBar = document.getElementById('status-bar');
+        const previewImage = document.getElementById('preview-image');
+        const showAdvancedCheckbox = document.getElementById('show-advanced');
+        const advancedOptions = document.getElementById('advanced-options');
+        const templateOptions = document.querySelectorAll('.template-option');
+
+        let currentImageBlob = null;
+
+        // Event Listeners
+        fontSizeSlider.addEventListener('input', () => {
+            fontSizeValue.textContent = fontSizeSlider.value;
+        });
+
+        lineSpacingSlider.addEventListener('input', () => {
+            lineSpacingValue.textContent = lineSpacingSlider.value;
+        });
+
+        randomnessSlider.addEventListener('input', () => {
+            randomnessValue.textContent = randomnessSlider.value;
+        });
+
+        pressureVarSlider.addEventListener('input', () => {
+            pressureVarValue.textContent = pressureVarSlider.value;
+        });
+
+        marginLeftSlider.addEventListener('input', () => {
+            marginLeftValue.textContent = marginLeftSlider.value;
+        });
+
+        marginTopSlider.addEventListener('input', () => {
+            marginTopValue.textContent = marginTopSlider.value;
+        });
+
+        wordSpacingSlider.addEventListener('input', () => {
+            wordSpacingValue.textContent = wordSpacingSlider.value;
+        });
+
+        letterSpacingSlider.addEventListener('input', () => {
+            letterSpacingValue.textContent = letterSpacingSlider.value;
+        });
+
+        lineHeightSlider.addEventListener('input', () => {
+            lineHeightValue.textContent = lineHeightSlider.value;
+        });
+
+        showAdvancedCheckbox.addEventListener('change', () => {
+            if (showAdvancedCheckbox.checked) {
+                advancedOptions.classList.add('show');
+            } else {
+                advancedOptions.classList.remove('show');
+            }
+        });
+
+        // Template selection
+        templateOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                templateOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                option.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Generate handwriting
+        generateBtn.addEventListener('click', generateHandwriting);
+        previewBtn.addEventListener('click', generateHandwriting);
+
+        async function generateHandwriting() {
+            const text = textInput.value.trim();
+            
+            if (!text) {
+                updateStatus('Please enter some text to convert!', 'error');
+                return;
+            }
+
+            const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
+            
+            // Calculate proper line offset based on template
+            let lineOffset = 0;
+            switch(selectedTemplate) {
+                case 'lined':
+                case 'college':
+                    lineOffset = 6; // Adjust to match the line spacing in the template
+                    break;
+                case 'notebook':
+                    lineOffset = 5;
+                    break;
+                case 'wide':
+                    lineOffset = 7;
+                    break;
+                case 'vintage':
+                    lineOffset = 6;
+                    break;
+                default:
+                    lineOffset = 0; // No offset for blank or graph paper
+            }
+
+            const formData = {
+                text: text,
+                font: fontSelect.value,
+                fontSize: fontSizeSlider.value,
+                lineSpacing: lineSpacingSlider.value,
+                inkColor: inkColorPicker.value,
+                template: selectedTemplate,
+                randomness: randomnessSlider.value,
+                pressureVar: pressureVarSlider.value,
+                marginLeft: marginLeftSlider.value,
+                marginTop: marginTopSlider.value,
+                wordSpacing: wordSpacingSlider.value,
+                letterSpacing: letterSpacingSlider.value,
+                lineHeight: lineHeightSlider.value,
+                lineOffset: lineOffset // Add line offset to ensure text appears between lines
+            };
+
+            updateStatus('Generating handwriting...', 'loading');
+            generateBtn.innerHTML = '<div class="loading-spinner"></div>Generating...';
+            generateBtn.disabled = true;
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to generate handwriting');
+                }
+
+                const blob = await response.blob();
+                currentImageBlob = blob;
+                
+                const imageUrl = URL.createObjectURL(blob);
+                previewImage.innerHTML = `<img src="${imageUrl}" alt="Generated Handwriting">`;
+                
+                updateStatus('Handwriting generated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                updateStatus(`Error: ${error.message}`, 'error');
+            } finally {
+                generateBtn.innerHTML = '🖋️ Generate Handwriting';
+                generateBtn.disabled = false;
+            }
+        }
+
+        // Download image
+        downloadBtn.addEventListener('click', () => {
+            if (!currentImageBlob) {
+                updateStatus('Please generate handwriting first!', 'error');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(currentImageBlob);
+            link.download = `handwriting_${Date.now()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            updateStatus('Image downloaded successfully!', 'success');
+        });
+
+        // Clear
+        clearBtn.addEventListener('click', () => {
+            textInput.value = '';
+            previewImage.innerHTML = '<p>Your generated handwriting will appear here</p>';
+            currentImageBlob = null;
+            updateStatus('Cleared successfully!', 'success');
+        });
+
+        function updateStatus(message, type = '') {
+            statusBar.textContent = message;
+            statusBar.className = 'status-bar';
+            if (type) {
+                statusBar.classList.add(type);
+            }
+        }
+
+        // Load Google Fonts dynamically for preview
+        function loadGoogleFont(fontName) {
+            const link = document.createElement('link');
+            link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(' ', '+')}:wght@400&display=swap`;
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
+        }
+
+        // Load popular fonts for preview
+        const popularFonts = ['Dancing Script', 'Caveat', 'Kalam', 'Patrick Hand', 'Indie Flower'];
+        popularFonts.forEach(loadGoogleFont);
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwriting Font Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #B8CFCE 0%, #871073 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 2000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2469aa 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .control-group input,
+        .control-group select,
+        .control-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .control-group input:focus,
+        .control-group select:focus,
+        .control-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .control-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .font-preview {
+            margin-top: 10px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #495057;
+        }
+
+        .color-input {
+            width: 60px !important;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .range-input {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #dee2e6;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .range-input::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 1000px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading {
+            display: none;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .paper-preview {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 1px solid #dee2e6;
+        }
+
+        .page-size-info {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #0066cc;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        .font-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .font-option {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: white;
+        }
+
+        .font-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .font-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .font-name {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .font-option.selected .font-name {
+            color: white;
+        }
+
+        .font-sample {
+            font-size: 18px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✍️ Handwriting Font Generator</h1>
+            <p>Transform your text into beautiful handwritten notes with realistic A4 paper backgrounds</p>
+        </div>
+
+        <div class="main-content">
+            <div class="controls">
+                <div class="control-group">
+                    <label for="text">Your Text</label>
+                    <textarea id="text" placeholder="Enter your text here...">The quick brown fox jumps over the lazy dog.
+This is a sample of handwritten text on A4 paper.
+You can write multiple lines and they will fit nicely on the A4 page!
+The generator will automatically handle line breaks and spacing.
+Perfect for creating realistic handwritten notes, letters, and documents.</textarea>
+                </div>
+
+                <div class="control-group">
+                    <label>Choose Font Style</label>
+                    <div class="font-grid" id="fontGrid">
+                        <!-- Fonts will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="template">Paper Style</label>
+                    <select id="template">
+                        <option value="blank">Blank A4 Paper</option>
+                        <option value="lined" selected>Lined A4 Paper</option>
+                        <option value="notebook">A4 Notebook Paper</option>
+                        <option value="college">A4 College Ruled</option>
+                        <option value="wide">A4 Wide Ruled</option>
+                        <option value="graph">A4 Graph Paper</option>
+                        <option value="vintage">Vintage A4 Paper</option>
+                    </select>
+                    <canvas class="paper-preview" id="paperPreview"></canvas>
+                    <div class="page-size-info">
+                        📄 A4 Size: 210 × 297 mm (2480 × 3508 pixels at 300 DPI)
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSize">Font Size: <span id="fontSizeValue">24</span>px</label>
+                    <input type="range" id="fontSize" class="range-input" min="16" max="48" value="24">
+                </div>
+
+                <div class="control-group">
+                    <label for="inkColor">Ink Color</label>
+                    <input type="color" id="inkColor" class="color-input" value="#1a1a1a">
+                </div>
+
+                <div class="control-group">
+                    <label for="randomness">Handwriting Variation: <span id="randomnessValue">0.3</span></label>
+                    <input type="range" id="randomness" class="range-input" min="0" max="1" step="0.1" value="0.3">
+                </div>
+
+                <div class="control-group">
+                    <label for="pressureVar">Ink Pressure: <span id="pressureValue">0.2</span></label>
+                    <input type="range" id="pressureVar" class="range-input" min="0" max="0.5" step="0.1" value="0.2">
+                </div>
+
+                <button class="generate-btn" id="generateBtn">Generate A4 Handwriting</button>
+                <div class="error" id="error"></div>
+            </div>
+
+            <div class="preview-area" id="previewArea">
+                <div class="loading" id="loading">
+                    <div>🖋️ Generating your A4 handwriting...</div>
+                </div>
+                <div id="previewContent">
+                    <p style="color: #6c757d; font-size: 18px;">Your handwritten A4 document will appear here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // A4 dimensions at 300 DPI (print quality)
+        const A4_WIDTH = 2480;  // 210mm at 300 DPI
+        const A4_HEIGHT = 3508; // 297mm at 300 DPI
+        
+        // For display purposes, we'll use a scaled version
+        const DISPLAY_SCALE = 0.2;
+        const DISPLAY_WIDTH = A4_WIDTH * DISPLAY_SCALE;
+        const DISPLAY_HEIGHT = A4_HEIGHT * DISPLAY_SCALE;
+
+        // Font definitions with Google Fonts URLs
+        const HANDWRITING_FONTS = {
+            "Dancing Script": "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap",
+            "Caveat": "https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap",
+            "Kalam": "https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap",
+            "Patrick Hand": "https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap",
+            "Indie Flower": "https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap",
+            "Shadows Into Light": "https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap",
+            "Homemade Apple": "https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap",
+            "Covered By Your Grace": "https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&display=swap",
+            "Architects Daughter": "https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap",
+            "Coming Soon": "https://fonts.googleapis.com/css2?family=Coming+Soon&display=swap",
+            "Schoolbell": "https://fonts.googleapis.com/css2?family=Schoolbell&display=swap",
+            "Reenie Beanie": "https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap",
+            "Just Another Hand": "https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap",
+            "Waiting for the Sunrise": "https://fonts.googleapis.com/css2?family=Waiting+for+the+Sunrise&display=swap",
+            "Mountains of Christmas": "https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap",
+            "Cedarville Cursive": "https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap",
+            "Delius": "https://fonts.googleapis.com/css2?family=Delius&display=swap",
+            "Delius Swash Caps": "https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&display=swap",
+            "Grand Hotel": "https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap",
+            "Great Vibes": "https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap",
+            "Handlee": "https://fonts.googleapis.com/css2?family=Handlee&display=swap",
+            "Kristi": "https://fonts.googleapis.com/css2?family=Kristi&display=swap",
+            "La Belle Aurore": "https://fonts.googleapis.com/css2?family=La+Belle+Aurore&display=swap",
+            "League Script": "https://fonts.googleapis.com/css2?family=League+Script&display=swap",
+            "Love Ya Like A Sister": "https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&display=swap",
+            "Nanum Pen Script": "https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap",
+            "Nothing You Could Do": "https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap",
+            "Over the Rainbow": "https://fonts.googleapis.com/css2?family=Over+the+Rainbow&display=swap",
+            "Pacifico": "https://fonts.googleapis.com/css2?family=Pacifico&display=swap",
+            "Permanent Marker": "https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap",
+            "Rock Salt": "https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap",
+            "Sacramento": "https://fonts.googleapis.com/css2?family=Sacramento&display=swap",
+            "Satisfy": "https://fonts.googleapis.com/css2?family=Satisfy&display=swap",
+            "Sue Ellen Francisco": "https://fonts.googleapis.com/css2?family=Sue+Ellen+Francisco&display=swap",
+            "Sunshiney": "https://fonts.googleapis.com/css2?family=Sunshiney&display=swap",
+            "Zeyada": "https://fonts.googleapis.com/css2?family=Zeyada&display=swap",
+            "Amatic SC": "https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap"
+        };
+
+        const PAPER_TEMPLATES = {
+            "blank": { name: "Blank A4 Paper", color: "#ffffff", lines: false },
+            "lined": { name: "Lined A4 Paper", color: "#ffffff", lines: true, lineColor: "#b3d9ff", lineHeight: 60 },
+            "notebook": { name: "A4 Notebook Paper", color: "#fefefe", lines: true, lineColor: "#d1e7dd", lineHeight: 55, margin: true },
+            "college": { name: "A4 College Ruled", color: "#ffffff", lines: true, lineColor: "#e6f3ff", lineHeight: 45, margin: true },
+            "wide": { name: "A4 Wide Ruled", color: "#ffffff", lines: true, lineColor: "#e6f3ff", lineHeight: 70, margin: true },
+            "graph": { name: "A4 Graph Paper", color: "#ffffff", lines: false, grid: true, gridSize: 30, gridColor: "#e6f3ff" },
+            "vintage": { name: "Vintage A4 Paper", color: "#f5f1e8", lines: true, lineColor: "#d4c5b9", lineHeight: 58 }
+        };
+
+        let selectedFont = "Dancing Script";
+        let loadedFonts = new Set();
+
+        // Load all fonts
+        function loadFonts() {
+            const head = document.head;
+            Object.entries(HANDWRITING_FONTS).forEach(([fontName, fontUrl]) => {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = fontUrl;
+                head.appendChild(link);
+                
+                // Mark as loaded after a delay
+                setTimeout(() => {
+                    loadedFonts.add(fontName);
+                    updateFontDisplay(fontName);
+                }, 500);
+            });
+        }
+
+        // Create font grid
+        function createFontGrid() {
+            const fontGrid = document.getElementById('fontGrid');
+            
+            Object.keys(HANDWRITING_FONTS).forEach(fontName => {
+                const fontOption = document.createElement('div');
+                fontOption.className = 'font-option';
+                fontOption.dataset.font = fontName;
+                
+                if (fontName === selectedFont) {
+                    fontOption.classList.add('selected');
+                }
+                
+                fontOption.innerHTML = `
+                    <div class="font-name">${fontName}</div>
+                    <div class="font-sample" style="font-family: '${fontName}', cursive;">Sample Text</div>
+                `;
+                
+                fontOption.addEventListener('click', () => {
+                    document.querySelectorAll('.font-option').forEach(opt => opt.classList.remove('selected'));
+                    fontOption.classList.add('selected');
+                    selectedFont = fontName;
+                });
+                
+                fontGrid.appendChild(fontOption);
+            });
+        }
+
+        // Update font display when loaded
+        function updateFontDisplay(fontName) {
+            const fontOption = document.querySelector(`[data-font="${fontName}"]`);
+            if (fontOption) {
+                const sample = fontOption.querySelector('.font-sample');
+                sample.style.fontFamily = `'${fontName}', cursive`;
+            }
+        }
+
+        // Create paper preview
+        function createPaperPreview(templateName) {
+            const canvas = document.getElementById('paperPreview');
+            const ctx = canvas.getContext('2d');
+            const template = PAPER_TEMPLATES[templateName];
+            
+            canvas.width = canvas.offsetWidth * 2;
+            canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+            
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+            
+            // Background
+            ctx.fillStyle = template.color;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Lines
+            if (template.lines) {
+                ctx.strokeStyle = template.lineColor;
+                ctx.lineWidth = 1;
+                
+                for (let y = 20; y < height - 10; y += template.lineHeight * 0.2) {
+                    ctx.beginPath();
+                    ctx.moveTo(10, y);
+                    ctx.lineTo(width - 10, y);
+                    ctx.stroke();
+                }
+            }
+            
+            // Margin
+            if (template.margin) {
+                ctx.strokeStyle = '#ff9999';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(30, 10);
+                ctx.lineTo(30, height - 10);
+                ctx.stroke();
+            }
+            
+            // Grid
+            if (template.grid) {
+                ctx.strokeStyle = template.gridColor;
+                ctx.lineWidth = 0.5;
+                
+                for (let x = 10; x < width - 10; x += template.gridSize * 0.2) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 10);
+                    ctx.lineTo(x, height - 10);
+                    ctx.stroke();
+                }
+                
+                for (let y = 10; y < height - 10; y += template.gridSize * 0.2) {
+                    ctx.beginPath();
+                    ctx.moveTo(10, y);
+                    ctx.lineTo(width - 10, y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Generate handwriting image
+        function generateHandwriting() {
+            const text = document.getElementById('text').value.trim();
+            const fontSize = parseInt(document.getElementById('fontSize').value);
+            const inkColor = document.getElementById('inkColor').value;
+            const template = document.getElementById('template').value;
+            const randomness = parseFloat(document.getElementById('randomness').value);
+            const pressureVar = parseFloat(document.getElementById('pressureVar').value);
+            
+            if (!text) {
+                showError('Please enter some text to convert!');
+                return;
+            }
+            
+            showLoading(true);
+            hideError();
+            
+            // Create canvas for handwriting generation at A4 size
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set A4 canvas size
+            canvas.width = A4_WIDTH;
+            canvas.height = A4_HEIGHT;
+            
+            // Create paper background
+            const paperTemplate = PAPER_TEMPLATES[template];
+            ctx.fillStyle = paperTemplate.color;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add paper texture
+            for (let i = 0; i < 5000; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const gray = Math.random() * 20 + 235;
+                ctx.fillStyle = `rgba(${gray}, ${gray}, ${gray}, 0.3)`;
+                ctx.fillRect(x, y, 1, 1);
+            }
+            
+            // A4 margins (approximately 1 inch = 118 pixels at 300 DPI)
+            const marginTop = 150;
+            const marginBottom = 150;
+            const marginLeft = 150;
+            const marginRight = 150;
+            
+            // Draw lines/grid
+            if (paperTemplate.lines) {
+                ctx.strokeStyle = paperTemplate.lineColor;
+                ctx.lineWidth = 2;
+                
+                for (let y = marginTop; y < canvas.height - marginBottom; y += paperTemplate.lineHeight) {
+                    ctx.beginPath();
+                    ctx.moveTo(marginLeft, y);
+                    ctx.lineTo(canvas.width - marginRight, y);
+                    ctx.stroke();
+                }
+            }
+            
+            if (paperTemplate.margin) {
+                ctx.strokeStyle = '#ff9999';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(marginLeft + 80, marginTop);
+                ctx.lineTo(marginLeft + 80, canvas.height - marginBottom);
+                ctx.stroke();
+            }
+            
+            if (paperTemplate.grid) {
+                ctx.strokeStyle = paperTemplate.gridColor;
+                ctx.lineWidth = 1;
+                
+                for (let x = marginLeft; x < canvas.width - marginRight; x += paperTemplate.gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, marginTop);
+                    ctx.lineTo(x, canvas.height - marginBottom);
+                    ctx.stroke();
+                }
+                
+                for (let y = marginTop; y < canvas.height - marginBottom; y += paperTemplate.gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(marginLeft, y);
+                    ctx.lineTo(canvas.width - marginRight, y);
+                    ctx.stroke();
+                }
+            }
+            
+            // Set text properties (scale font size for A4)
+            const scaledFontSize = fontSize * 3; // Scale up for A4 resolution
+            ctx.font = `${scaledFontSize}px '${selectedFont}', cursive`;
+            ctx.fillStyle = inkColor;
+            ctx.textBaseline = 'alphabetic'; // Changed from 'top' to 'alphabetic' for better line alignment
+            
+            // Draw text with variations
+            const lines = text.split('\n');
+            let currentY = paperTemplate.lines ? marginTop + (paperTemplate.lineHeight * 0.7) : marginTop + 50;
+            const startX = paperTemplate.margin ? marginLeft + 100 : marginLeft + 20;
+            const maxWidth = canvas.width - marginRight - startX - 20;
+            
+            lines.forEach((line, lineIndex) => {
+                if (line.trim()) {
+                    // Word wrapping for long lines
+                    const words = line.split(' ');
+                    let currentLine = '';
+                    let currentX = startX;
+                    
+                    words.forEach((word, wordIndex) => {
+                        const testLine = currentLine + word + ' ';
+                        const testWidth = ctx.measureText(testLine).width;
+                        
+                        if (testWidth > maxWidth && currentLine !== '') {
+                            // Draw current line
+                            drawTextLine(ctx, currentLine.trim(), currentX, currentY, scaledFontSize, randomness, pressureVar, inkColor);
+                            
+                            // Move to next line
+                            currentY += paperTemplate.lines ? paperTemplate.lineHeight : scaledFontSize * 1.8;
+                            currentLine = word + ' ';
+                            currentX = startX;
+                        } else {
+                            currentLine = testLine;
+                        }
+                    });
+                    
+                    // Draw remaining text
+                    if (currentLine.trim()) {
+                        drawTextLine(ctx, currentLine.trim(), currentX, currentY, scaledFontSize, randomness, pressureVar, inkColor);
+                    }
+                }
+                
+                // Move to next line
+                currentY += paperTemplate.lines ? paperTemplate.lineHeight : scaledFontSize * 1.8;
+            });
+            
+            // Convert canvas to image and display
+            const dataUrl = canvas.toDataURL('image/png');
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.className = 'preview-image';
+            img.alt = 'Generated A4 handwriting';
+            
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = '';
+            previewContent.appendChild(img);
+            
+            // Add download button
+            const downloadBtn = document.createElement('button');
+            downloadBtn.textContent = 'Download A4 Image (High Resolution)';
+            downloadBtn.className = 'generate-btn';
+            downloadBtn.style.marginTop = '15px';
+            downloadBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'handwriting-a4.png';
+                link.click();
+            };
+            previewContent.appendChild(downloadBtn);
+            
+            showLoading(false);
+        }
+
+        // Helper function to draw text line with variations
+        function drawTextLine(ctx, text, startX, y, fontSize, randomness, pressureVar, inkColor) {
+            let currentX = startX;
+            
+            // Add line-level variations
+            const lineSlant = (Math.random() - 0.5) * randomness * 0.02;
+            const lineYOffset = (Math.random() - 0.5) * randomness * 8;
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                
+                if (char === ' ') {
+                    currentX += fontSize * 0.3;
+                    continue;
+                }
+                
+                // Character-level variations
+                const charXOffset = (Math.random() - 0.5) * randomness * 8;
+                const charYOffset = (Math.random() - 0.5) * randomness * 4;
+                const rotation = (Math.random() - 0.5) * randomness * 0.1;
+                
+                // Pressure variation
+                const alpha = 1 - (Math.random() * pressureVar);
+                
+                // Convert hex to rgba
+                const hex = inkColor.replace('#', '');
+                const r = parseInt(hex.substr(0, 2), 16);
+                const g = parseInt(hex.substr(2, 2), 16);
+                const b = parseInt(hex.substr(4, 2), 16);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                
+                // Save context, apply transformations, then draw character
+                ctx.save();
+                ctx.translate(currentX + charXOffset, y + lineYOffset + charYOffset);
+                ctx.rotate(rotation);
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+                
+                // Move to next character position
+                const charWidth = ctx.measureText(char).width;
+                currentX += charWidth + (Math.random() * randomness * 2);
+                
+                // Apply line slant
+                y += lineSlant * charWidth;
+            }
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            show ? loading.classList.add('show') : loading.classList.remove('show');
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.classList.add('show');
+        }
+
+        function hideError() {
+            const error = document.getElementById('error');
+            error.classList.remove('show');
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load fonts and create UI
+            loadFonts();
+            createFontGrid();
+            
+            // Set up paper preview
+            const templateSelect = document.getElementById('template');
+            createPaperPreview(templateSelect.value);
+            
+            templateSelect.addEventListener('change', () => {
+                createPaperPreview(templateSelect.value);
+            });
+            
+            // Set up range value displays
+            document.getElementById('fontSize').addEventListener('input', (e) => {
+                document.getElementById('fontSizeValue').textContent = e.target.value;
+            });
+            
+            document.getElementById('randomness').addEventListener('input', (e) => {
+                document.getElementById('randomnessValue').textContent = e.target.value;
+            });
+            
+            document.getElementById('pressureVar').addEventListener('input', (e) => {
+                document.getElementById('pressureValue').textContent = e.target.value;
+            });
+            
+            // Set up generate button
+            document.getElementById('generateBtn').addEventListener('click', generateHandwriting);
+            
+            // Generate initial preview
+            setTimeout(generateHandwriting, 1000);
+        });
+    </script>
+</body>
+</html>
