@@ -60,8 +60,8 @@ This Text to Handwritten Converter is a powerful tool that transforms digital te
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/itsAksharaRathore/text-to-handwritten.git
-cd text-to-handwritten
+git clone https://github.com/itsAksharaRathore/WriteCraft.git
+cd WriteCraft
 
 # Create and activate virtual environment
 python -m venv venv
